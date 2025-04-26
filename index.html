@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>15 Jours de Positivité - Ai-Me | Au Pays de Marie</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Quicksand:wght@500&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+  <style>
+    body {
+      font-family: 'Quicksand', 'Montserrat', Arial, sans-serif;
+      background: linear-gradient(135deg, #fff7ed 0%, #fff1e0 100%);
+      color: #402607;
+    }
+    .brand-footer {
+      font-family: 'Montserrat', sans-serif;
+      letter-spacing: 2px;
+    }
+    .day-btn-active, .day-btn:hover, .nav-btn-active {
+      background: linear-gradient(90deg, #ffa94d 0%, #fd7e14 100%);
+      color: #fff !important;
+      box-shadow: 0 2px 8px rgba(253, 126, 20, 0.12);
+    }
+    .hue-anim { animation: hue 6s linear infinite; }
+    @keyframes hue { 0% { filter: hue-rotate(0); } 100% { filter: hue-rotate(360deg); } }
+    .scrollbar-hide::-webkit-scrollbar { display: none; }
+    .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+    @media print {
+      html, body, #content-main {
+        overflow: visible !important;
+        height: auto !important;
+        max-height: none !important;
+      }
+      .scrollbar-hide, .overflow-y-auto {
+        overflow: visible !important;
+        max-height: none !important;
+      }
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+  <!-- Header / Hero -->
+  <header class="w-full text-center py-8 mb-2">
+    <h1 class="text-3xl md:text-4xl font-montserrat hue-anim font-semibold mb-2 text-orange-600">15 Jours de Positivité</h1>
+    <p class="text-lg max-w-2xl mx-auto text-orange-800">
+      Créez votre rituel positif en 15 jours : intentions inspirantes, routines simples, gratitude et bien-être au quotidien.<br>
+      <span class="inline-block text-sm mt-3 bg-yellow-50 text-orange-500 px-4 py-1 rounded-full uppercase tracking-wider font-medium">
+        Par "Ai-Me | Au Pays de Marie"
+      </span>
+    </p>
+  </header>
+
+  <main id="content-main" class="flex-1 max-w-3xl mx-auto px-2 md:px-0">
+    <!-- Navigation Jours -->
+    <nav class="flex flex-wrap justify-center gap-2 mb-6">
+      <template id="nav-template"></template>
+    </nav>
+
+    <!-- Section principale du jour sélectionné -->
+    <section id="day-content" class="rounded-2xl bg-white bg-opacity-70 shadow px-4 py-6 md:py-8 mb-6 transition-all duration-300">
+      <!-- Le contenu du jour va être injecté ici par JS -->
+    </section>
+
+    <!-- Outils complémentaires -->
+    <section class="mb-10">
+      <div class="flex flex-col md:flex-row gap-6 justify-center">
+        <button id="btn-visualization" class="flex items-center gap-2 px-4 py-2 rounded-xl border border-orange-200 bg-orange-50 text-orange-700 hover:bg-orange-200 focus:outline-none mb-2 md:mb-0 transition">
+          <i class="fa-solid fa-eye"></i> Visualisation Guidée
+        </button>
+        <button id="btn-breathing" class="flex items-center gap-2 px-4 py-2 rounded-xl border border-orange-200 bg-orange-50 text-orange-700 hover:bg-orange-200 focus:outline-none transition">
+          <i class="fa-solid fa-heartbeat"></i> Cohérence Cardiaque
+        </button>
+        <button id="btn-mood" class="flex items-center gap-2 px-4 py-2 rounded-xl border border-orange-200 bg-orange-50 text-orange-700 hover:bg-orange-200 focus:outline-none transition">
+          <i class="fa-solid fa-face-smile"></i> Suivi d'Humeur
+        </button>
+      </div>
+    </section>
+
+    <!-- Modals -->
+    <div id="modal-bg" class="hidden fixed inset-0 bg-black bg-opacity-30 z-50"></div>
+
+    <!-- Visualisation Modal -->
+    <div id="modal-visualization" class="hidden fixed z-50 inset-0 flex items-center justify-center">
+      <div class="bg-white rounded-2xl shadow-lg p-6 max-w-md w-full relative">
+        <button onclick="closeModal()" class="absolute right-4 top-4 text-orange-400 hover:text-orange-600 text-lg focus:outline-none"><i class="fa fa-times"></i></button>
+        <h2 class="text-xl font-bold text-orange-700 mb-1 flex items-center gap-2"><i class="fa-regular fa-eye"></i>Visualisation Guidée</h2>
+        <p class="text-sm text-orange-900 mb-3">
+          Installez-vous confortablement, fermez les yeux, et laissez-vous guider par cette visualisation positive :
+        </p>
+        <ol class="list-decimal list-inside space-y-2 text-orange-700">
+          <li>Imaginez-vous vivre une journée idéale, pleine de douceur et de réussite.</li>
+          <li>Visualisez vos relations, vos actions, vos sourires, la lumière et la chaleur autour de vous.</li>
+          <li>Ressentez la fierté et la paix d'avancer chaque jour vers le meilleur de vous-même.</li>
+        </ol>
+        <p class="mt-3 text-xs">Répétez cette visualisation 1 à 3 minutes, quotidiennement.</p>
+      </div>
+    </div>
+
+    <!-- Cohérence cardiaque Modal -->
+    <div id="modal-breathing" class="hidden fixed z-50 inset-0 flex items-center justify-center">
+      <div class="bg-white rounded-2xl shadow-lg p-6 max-w-md w-full relative">
+        <button onclick="closeModal()" class="absolute right-4 top-4 text-orange-400 hover:text-orange-600 text-lg focus:outline-none"><i class="fa fa-times"></i></button>
+        <h2 class="text-xl font-bold text-orange-700 mb-2 flex items-center gap-2">
+          <i class="fa-solid fa-heartbeat"></i>Cohérence Cardiaque
+        </h2>
+        <p class="text-sm text-orange-900 mb-3">Synchronisez votre respiration pour apaiser votre mental :<br><span class="font-normal">Inspirez 5s / Expirez 5s &mdash; 6 cycles par minute pendant 3 à 5 minutes.</span></p>
+        <div class="relative flex items-center justify-center w-full h-32 mb-2">
+          <canvas id="breath-anim" width="180" height="120"></canvas>
+        </div>
+        <div id="breath-message" class="text-center font-semibold text-md text-orange-700 mb-1"></div>
+        <button onclick="startBreathing()" id="start-breath" class="w-full mt-2 px-4 py-2 rounded-lg bg-orange-100 text-orange-700 border border-orange-200 hover:bg-orange-200 transition">Démarrer l’exercice</button>
+      </div>
+    </div>
+
+    <!-- Mood Tracker Modal -->
+    <div id="modal-mood" class="hidden fixed z-50 inset-0 flex items-center justify-center">
+      <div class="bg-white rounded-2xl shadow-lg p-6 max-w-md w-full relative">
+        <button onclick="closeModal()" class="absolute right-4 top-4 text-orange-400 hover:text-orange-600 text-lg focus:outline-none"><i class="fa fa-times"></i></button>
+        <h2 class="text-xl font-bold text-orange-700 mb-2 flex items-center gap-2"><i class="fa-solid fa-face-smile"></i>Suivi d'Humeur</h2>
+        <p class="text-sm text-orange-900 mb-3">Comment vous sentez-vous aujourd’hui ?</p>
+        <div class="flex justify-between gap-2 mb-4" id="mood-emojis">
+          <button class="text-3xl px-2 focus:outline-none" onclick="saveMood(0)">😔</button>
+          <button class="text-3xl px-2 focus:outline-none" onclick="saveMood(1)">😐</button>
+          <button class="text-3xl px-2 focus:outline-none" onclick="saveMood(2)">🙂</button>
+          <button class="text-3xl px-2 focus:outline-none" onclick="saveMood(3)">😃</button>
+          <button class="text-3xl px-2 focus:outline-none" onclick="saveMood(4)">🤩</button>
+        </div>
+        <div style="height:180px;">
+          <canvas id="mood-chart"></canvas>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="w-full py-6 text-center mt-4 brand-footer text-orange-500 font-semibold text-lg tracking-wider bg-orange-50">
+    Ai-Me | Au Pays de Marie
+  </footer>
+
+  <!-- Script -->
+  <script>
+    // --- Data ---
+    const dayData = [
+      {
+        intention: "Aujourd’hui, je choisis d’ACCUEILLIR la joie, même dans les petites choses.",
+        routine_matin: "Buvez un grand verre d’eau au réveil, ouvrez la fenêtre et faites trois grandes inspirations profondes.",
+        affirmations: [
+          "Je mérite le bonheur et la simplicité.",
+          "Chaque matin est une promesse de renouveau.",
+        ],
+        gratitude: "Remerciez mentalement pour une chose qui vous fait sourire dès le matin (ex : un rayon de soleil, un oiseau qui chante, un message reçu…).",
+        defibienetre: "Souriez à trois personnes aujourd’hui (même à des inconnus) et observez l’énergie que cela crée.",
+        routine_soir: "Éteignez les écrans 20 min avant le coucher, écoutez une musique douce ou lisez une page inspirante."
+      },
+      {
+        intention: "Aujourd’hui, je reste CURIEUX de tout et ouvert à la nouveauté.",
+        routine_matin: "Avant de vous lever, étirez-vous comme un chat puis prenez 2 minutes pour imaginer une chose nouvelle à essayer aujourd’hui.",
+        affirmations: [
+          "J’accueille le changement avec enthousiasme.",
+          "Mon esprit est ouvert et vibrant."
+        ],
+        gratitude: "Notez une découverte, une idée, ou une surprise du jour (aussi minime soit-elle).",
+        defibienetre: "Testez une routine différente (petit-déjeuner, itinéraire, musique…) pour dynamiser la journée.",
+        routine_soir: "Repensez à une nouveauté de la journée et félicitez-vous d’avoir osé changer."
+      },
+      {
+        intention: "Aujourd’hui, je m’accorde la DOUCEUR, dans mes gestes et mes pensées.",
+        routine_matin: "Prenez une douche consciente : sentez chaque goutte, respirez profondément et démarrez la journée avec calme.",
+        affirmations: [
+          "Je me traite avec bienveillance.",
+          "La douceur améliore ma force intérieure."
+        ],
+        gratitude: "Remerciez-vous pour un soin, un effort, une attention envers vous-même.",
+        defibienetre: "Offrez-vous un auto-massage du visage ou des mains pendant une minute.",
+        routine_soir: "Faites une respiration profonde, puis listez 3 moments doux de la journée."
+      },
+      {
+        intention: "Aujourd’hui, je m’engage à RALENTIR et savourer l’instant.",
+        routine_matin: "Prenez votre petit-déjeuner sans distraction (sans téléphone). Mastiquez lentement, profitez de chaque bouchée.",
+        affirmations: [
+          "Je prends le temps d’apprécier chaque instant.",
+          "Ralentir, c’est prendre soin de moi."
+        ],
+        gratitude: "Décrivez un instant simple que vous avez savouré aujourd’hui.",
+        defibienetre: "Faites une promenade lente, en pleine conscience, en notant 5 choses que vous n’aviez jamais remarqué.",
+        routine_soir: "Écrivez ou méditez pendant 3 minutes sur l’instant qui vous a marqué."
+      },
+      {
+        intention: "Aujourd’hui, je RAYONNE de gratitude.",
+        routine_matin: "En vous regardant dans le miroir, dites à voix haute : Merci la vie pour ce que je suis, ici et maintenant.",
+        affirmations: [
+          "Ma gratitude illumine ma journée.",
+          "J’attire du positif en étant reconnaissant."
+        ],
+        gratitude: "Notez ou partagez à voix haute trois choses pour lesquelles vous ressentez de la gratitude.",
+        defibienetre: "Écrivez un petit mot ou envoyez un message de remerciement à quelqu’un.",
+        routine_soir: "Pensez à ces 3 choses gratitude juste avant de dormir, et ressentez-les pleinement."
+      },
+      {
+        intention: "Aujourd’hui, je fais CONFIANCE à la vie et à ses surprises.",
+        routine_matin: "Listez trois qualités ou capacités sur lesquelles vous pouvez compter en toute situation.",
+        affirmations: [
+          "Je suis capable et confiant.",
+          "Je laisse la vie me surprendre dans le bon sens."
+        ],
+        gratitude: "Remerciez pour un imprévu positif récent, ou pour la capacité de rebondir après un imprévu.",
+        defibienetre: "Tentez une action sans tout planifier : laissez place à l’improvisation.",
+        routine_soir: "Repensez à un moment où la confiance a porté ses fruits aujourd’hui."
+      },
+      {
+        intention: "Aujourd’hui, je m’engage à être GENTIL avec moi-même et les autres.",
+        routine_matin: "Définissez une attention bienveillante que vous pourrez offrir aujourd’hui, à vous ou à quelqu’un d’autre.",
+        affirmations: [
+          "La gentillesse est ma force.",
+          "Je cultive la bienveillance à chaque instant."
+        ],
+        gratitude: "Célébrez la gentillesse reçue ou donnée aujourd’hui.",
+        defibienetre: "Tendez la main spontanément à quelqu’un (aider, tenir une porte, dire bonjour…).",
+        routine_soir: "Faites un scan intérieur et remerciez-vous pour chaque gentillesse accomplie."
+      },
+      {
+        intention: "Aujourd’hui, je me concentre sur l’ÉCOUTE de mes besoins.",
+        routine_matin: "Au réveil, posez-vous la question : de quoi ai-je besoin aujourd’hui ? (repos, énergie, rire, nature…)",
+        affirmations: [
+          "Je respecte mes propres besoins.",
+          "Écouter mon corps, c’est me respecter."
+        ],
+        gratitude: "Remerciez-vous d’avoir pris en compte ne serait-ce qu’un petit besoin aujourd’hui.",
+        defibienetre: "Consacrez 10 minutes à faire seulement ce qui vous fait du bien.",
+        routine_soir: "Notez ce que vous avez ressenti en écoutant vos besoins."
+      },
+      {
+        intention: "Aujourd’hui, je célèbre MES SUCCÈS, petits ou grands.",
+        routine_matin: "Faites la liste de 3 choses accomplies la veille, même minimes.",
+        affirmations: [
+          "Chaque étape mérite d’être fêtée.",
+          "Je suis fier(e) de mes progrès."
+        ],
+        gratitude: "Soyez reconnaissant pour une victoire du jour.",
+        defibienetre: "Offrez-vous un moment pour célébrer : musique favorite, danse, petite récompense…",
+        routine_soir: "Gardez la trace de vos mini-succès pour booster votre moral."
+      },
+      {
+        intention: "Aujourd’hui, je privilégie l’HARMONIE et la paix intérieure.",
+        routine_matin: "Méditez (ou respirez) 2 minutes en visualisant un lieu paisible (plage, forêt…).",
+        affirmations: [
+          "L’harmonie est une énergie que je choisis.",
+          "Je reste centré malgré les turbulences."
+        ],
+        gratitude: "Remerciez pour un moment de calme dans votre journée.",
+        defibienetre: "Écoutez une musique calme, ou restez 5 minutes sans rien faire.",
+        routine_soir: "Écrivez 2 choses qui ont favorisé votre harmonie aujourd’hui."
+      },
+      {
+        intention: "Aujourd’hui, je SÈME du positif autour de moi.",
+        routine_matin: "Définissez une parole encourageante que vous pourriez offrir à quelqu’un.",
+        affirmations: [
+          "Ma positivité est contagieuse.",
+          "J’illumine la vie des autres."
+        ],
+        gratitude: "Remerciez pour l’impact positif d’une rencontre ou d’un échange.",
+        defibienetre: "Partagez une ressource inspirante (livre, lien, vidéo) avec un proche.",
+        routine_soir: "Visualisez toutes les graines de positif semées aujourd’hui."
+      },
+      {
+        intention: "Aujourd’hui, j’accueille la SIMPLICITÉ.",
+        routine_matin: "Établissez une liste express de 3 priorités réalistes pour la journée.",
+        affirmations: [
+          "La simplicité rend ma vie plus belle.",
+          "Je me libère du superflu."
+        ],
+        gratitude: "Remerciez pour toutes les choses simples qui vous ont fait du bien aujourd’hui.",
+        defibienetre: "Désencombrez un coin de votre espace, même très petit.",
+        routine_soir: "Terminez la journée par une respiration apaisante, allongé(e)."
+      },
+      {
+        intention: "Aujourd’hui, je pratique la PATIENCE.",
+        routine_matin: "Réalisez une tâche du matin en pleine conscience, sans vous presser.",
+        affirmations: [
+          "La patience me rend plus fort(e).",
+          "Je progresse à mon rythme."
+        ],
+        gratitude: "Soyez reconnaissant pour un moment où votre patience a porté ses fruits.",
+        defibienetre: "Lorsque l’impatience guette, prenez 3 inspirations longues et souriez.",
+        routine_soir: "Félicitez-vous pour vos moments de patience."
+      },
+      {
+        intention: "Aujourd’hui, je cultive l’OPTIMISME.",
+        routine_matin: "Commencez la journée par cette phrase : Quel est le meilleur qui puisse arriver aujourd’hui ?",
+        affirmations: [
+          "L’optimisme m’ouvre des portes.",
+          "Je choisis le point de vue positif."
+        ],
+        gratitude: "Notez une chose qui vous donne espoir pour le futur.",
+        defibienetre: "Faites une activité qui vous met instinctivement de bonne humeur.",
+        routine_soir: "Laissez aller les pensées négatives et notez au moins un moment positif."
+      },
+      {
+        intention: "Aujourd’hui, je suis ACTEUR de mon bonheur.",
+        routine_matin: "Visualisez votre journée réussie comme un petit film positif.",
+        affirmations: [
+          "Je crée mon bonheur chaque jour.",
+          "Je suis responsable de mon énergie."
+        ],
+        gratitude: "Remerciez pour le pouvoir que vous avez sur votre propre bonheur.",
+        defibienetre: "Écrivez une action (même minime) que vous avez initiée pour vous-même.",
+        routine_soir: "Ressentez la satisfaction des initiatives prises aujourd’hui."
+      },
+      {
+        intention: "Aujourd’hui, je m’autorise à LÂCHER PRISE.",
+        routine_matin: "Identifiez une préoccupation : dites-lui mentalement 'je pose ça, pour aujourd’hui'.",
+        affirmations: [
+          "Je relâche le contrôle, je fais confiance.",
+          "Le lâcher prise m’ouvre à la nouveauté."
+        ],
+        gratitude: "Soyez reconnaissant pour tout ce qui a été plus léger ou inattendu.",
+        defibienetre: "Pratiquez 5 minutes de relaxation ou de méditation.",
+        routine_soir: "Notez comment vous vous sentez après ce lâcher prise."
+      }
+    ];
+
+    // -- Helper pour sélectionner un jour
+    let currentDay = 0;
+
+    function renderNav() {
+      let navHtml = '';
+      for (let i = 0; i < dayData.length; i++) {
+        navHtml += `
+          <button class="flex items-center justify-center w-10 h-10 rounded-full border border-orange-300 bg-white text-orange-400 text-lg font-bold focus:outline-none font-montserrat transition day-btn ${i === currentDay ? 'day-btn-active shadow' : ''}" onclick="selectDay(${i})" aria-label="Jour ${i+1}" id="btn-day-${i}">
+            ${i+1}
+          </button>
+        `;
+      }
+      document.querySelector('nav').innerHTML = navHtml;
+    }
+
+    function renderDay(idx) {
+      const d = dayData[idx];
+      document.getElementById('day-content').innerHTML = `
+        <div class="mb-4 flex justify-between items-start">
+          <span class="inline-block px-4 py-2 rounded-xl bg-orange-100 text-orange-700 font-montserrat text-sm tracking-wider font-semibold shadow">Jour ${idx+1}</span>
+          <span class="text-lg text-orange-400 font-semibold ml-2"><i class="fa-solid fa-sun"></i></span>
+        </div>
+        <h2 class="text-xl font-semibold text-orange-700 mb-2"><i class="fa-solid fa-star text-orange-400 opacity-80"></i> Intention du jour</h2>
+        <blockquote class="border-l-4 border-orange-200 pl-4 italic mb-3 text-orange-900">${d.intention}</blockquote>
+
+        <div class="mb-3">
+          <h3 class="font-semibold text-orange-600 mb-1 flex items-center gap-2"><i class="fa-solid fa-cloud-sun"></i> Routine Matinale</h3>
+          <p class="text-orange-900">${d.routine_matin}</p>
+        </div>
+        <div class="mb-3">
+          <h3 class="font-semibold text-orange-600 mb-1 flex items-center gap-2"><i class="fa-solid fa-quote-left"></i> Affirmations Positives</h3>
+          <ul class="list-disc list-inside space-y-1">
+            ${d.affirmations.map(a => `<li>${a}</li>`).join('')}
+          </ul>
+        </div>
+        <div class="mb-3">
+          <h3 class="font-semibold text-orange-600 mb-1 flex items-center gap-2"><i class="fa-solid fa-leaf"></i> Exercice de gratitude</h3>
+          <p class="text-orange-900">${d.gratitude}</p>
+        </div>
+        <div class="mb-3">
+          <h3 class="font-semibold text-orange-600 mb-1 flex items-center gap-2"><i class="fa-solid fa-heart"></i> Petit défi bien-être</h3>
+          <p class="text-orange-900">${d.defibienetre}</p>
+        </div>
+        <div>
+          <h3 class="font-semibold text-orange-600 mb-1 flex items-center gap-2"><i class="fa-regular fa-moon"></i> Routine du soir apaisante</h3>
+          <p class="text-orange-900">${d.routine_soir}</p>
+        </div>
+      `;
+    }
+
+    function selectDay(idx) {
+      currentDay = idx;
+      renderNav();
+      renderDay(idx);
+    }
+
+    // --- Outils complémentaires (modals) ---
+    function closeModal() {
+      document.getElementById('modal-bg').classList.add('hidden');
+      document.getElementById('modal-visualization').classList.add('hidden');
+      document.getElementById('modal-breathing').classList.add('hidden');
+      document.getElementById('modal-mood').classList.add('hidden');
+      // Stop breathing animation if exists
+      if (window.breathingAnimRunning) {
+        window.breathingAnimRunning = false;
+        ctxBreath.clearRect(0,0,180,120);
+        document.getElementById('breath-message').textContent = '';
+      }
+    }
+
+    document.getElementById('btn-visualization').onclick = function() {
+      document.getElementById('modal-bg').classList.remove('hidden');
+      document.getElementById('modal-visualization').classList.remove('hidden');
+    };
+    document.getElementById('btn-breathing').onclick = function() {
+      document.getElementById('modal-bg').classList.remove('hidden');
+      document.getElementById('modal-breathing').classList.remove('hidden');
+    };
+    document.getElementById('btn-mood').onclick = function() {
+      document.getElementById('modal-bg').classList.remove('hidden');
+      document.getElementById('modal-mood').classList.remove('hidden');
+      drawMoodChart();
+    };
+    document.getElementById('modal-bg').onclick = closeModal;
+
+    // --- Cohérence cardiaque (respiration guidée) ---
+    let ctxBreath = null;
+    function startBreathing() {
+      const cv = document.getElementById('breath-anim');
+      ctxBreath = cv.getContext('2d');
+      let phase = 0;
+      let time = 0;
+      let cycle = 0;
+      window.breathingAnimRunning = true;
+
+      function drawBreathBall(perc, msg) {
+        ctxBreath.clearRect(0, 0, 180, 120);
+        const r = 28 + 32 * perc;
+        ctxBreath.beginPath();
+        ctxBreath.arc(90, 60, r, 0, Math.PI * 2);
+        ctxBreath.fillStyle = "#fd7e14";
+        ctxBreath.globalAlpha = 0.33 + perc * 0.67;
+        ctxBreath.fill();
+        ctxBreath.globalAlpha = 1;
+      }
+
+      function breatheStep() {
+        if (!window.breathingAnimRunning) return;
+        let t = (time % 1000) / 1000;
+        let cyclePos = Math.floor(time / 10000); // 10s each cycle
+        let phaseT = (time % 10000) / 10000; // 0-1 over total 10s
+
+        let perc, msg;
+        if (phaseT < 0.5) {
+          perc = phaseT / 0.5;
+          msg = "Inspirez... (" + Math.ceil(5 - (phaseT*10)%5) + "s)";
+        } else {
+          perc = 1 - ((phaseT-0.5)/0.5);
+          msg = "Expirez... (" + Math.ceil(5 - ((phaseT-0.5)*10)%5) + "s)";
+        }
+        drawBreathBall(perc, msg);
+        document.getElementById('breath-message').textContent = msg;
+
+        time += 50;
+        if (time > 180000) { // 3 min = 180s = 180000ms. stop after 3min
+          window.breathingAnimRunning = false;
+          document.getElementById('breath-message').textContent = "Bravo ! Exercice terminé.";
+          return;
+        }
+        if (window.breathingAnimRunning) setTimeout(breatheStep, 50);
+      }
+
+      time = 0;
+      window.breathingAnimRunning = false; // reset if running more than once
+      setTimeout(() => {
+        window.breathingAnimRunning = true;
+        breatheStep();
+      }, 300);
+    }
+
+    // -- Mood Tracker --
+    function saveMood(level) {
+      let moods = JSON.parse(localStorage.getItem('moodDays') || '[]');
+      let today = (new Date()).toISOString().substr(0,10);
+      // Update or push
+      const idx = moods.findIndex(e => e.date === today);
+      if (idx !== -1) moods[idx].level = level;
+      else moods.push({date: today, level: level});
+      localStorage.setItem('moodDays', JSON.stringify(moods));
+      drawMoodChart();
+    }
+    function drawMoodChart() {
+      const raw = localStorage.getItem('moodDays');
+      let moodDays = raw ? JSON.parse(raw) : [];
+      // Take last 15
+      moodDays = moodDays.slice(-15);
+      const el = document.getElementById('mood-chart');
+      if (!el) return;
+
+      if (window.chartMood) window.chartMood.destroy();
+      window.chartMood = new Chart(el, {
+        type: 'bar',
+        data: {
+          labels: moodDays.map(m=> m.date.slice(5)),
+          datasets: [{
+            label: 'Humeur',
+            data: moodDays.map(m=> m.level),
+            backgroundColor: [
+              '#fd7e14','#ffa94d','#ffd59a','#a5ddaa','#00bc8c'
+            ],
+            borderWidth: 1
+          }]
+        },
+        options: {
+          scales: {
+            y: { min: 0, max: 4, ticks: { stepSize: 1, callback:v=>['😔','😐','🙂','😃','🤩'][v] } }
+          },
+          plugins: {
+            legend: { display: false }
+          }
+        }
+      });
+    }
+
+    // --- Init page ---
+    document.addEventListener('DOMContentLoaded', function() {
+      renderNav();
+      renderDay(currentDay);
+    });
+  </script>
+</body>
+</html>
